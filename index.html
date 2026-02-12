@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green La Salle — Environmental Advocacy</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-dark: #006633;
+            --green-mid: #008C45;
+            --green-light: #00a855;
+            --gold: #FFD700;
+            --gold-dark: #c5a600;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(0, 102, 51, 0.95);
+            backdrop-filter: blur(10px);
+            transition: box-shadow 0.3s ease, background 0.3s ease;
+        }
+        .navbar.scrolled {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: rgba(0, 70, 35, 0.98);
+        }
+        .nav-link {
+            position: relative;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            padding: 0.5rem 0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover { color: var(--gold); }
+        .nav-link:hover::after,
+        .nav-link.active::after { width: 100%; }
+        .nav-link.active { color: var(--gold); }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #003d1f 0%, var(--green-dark) 30%, var(--green-mid) 70%, #00a855 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 80%;
+            height: 200%;
+            background: radial-gradient(ellipse, rgba(255,215,0,0.06) 0%, transparent 70%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+        @keyframes heroGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-5%, 5%) scale(1.1); }
+        }
+
+        /* ── Floating Particles ── */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.15);
+            animation: floatParticle linear infinite;
+        }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ── Lasallian Star SVG ── */
+        .lasallian-star {
+            display: inline-block;
+        }
+
+        /* ── Scroll Animations ── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ── Section Styling ── */
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: var(--green-dark);
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--green-mid));
+            border-radius: 2px;
+            margin-top: 0.5rem;
+        }
+
+        /* ── Cards ── */
+        .problem-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e8f5e9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--green-dark), var(--gold));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        .problem-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,102,51,0.15);
+            border-color: var(--green-mid);
+        }
+        .problem-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .contribution-card {
+            background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .contribution-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            transition: transform 0.5s ease;
+        }
+        .contribution-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0,102,51,0.3);
+        }
+        .contribution-card:hover::after {
+            transform: translate(-20%, 20%);
+        }
+
+        /* ── Video Responsive ── */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 16px;
+        }
+
+        /* ── Decorative Elements ── */
+        .leaf-decoration {
+            position: absolute;
+            opacity: 0.05;
+            font-size: 15rem;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* ── Button ── */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--gold), #f5c800);
+            color: var(--green-dark);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255,215,0,0.5);
+            background: linear-gradient(135deg, #ffe34d, var(--gold));
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: linear-gradient(160deg, #002b17, var(--green-dark));
+        }
+
+        /* ── Mobile Nav ── */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* ── Hamburger ── */
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: white;
+            margin: 6px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 6px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -6px);
+        }
+
+        /* ── Stat Counter ── */
+        .stat-number {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 3rem;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--green-dark); }
+
+        @media (max-width: 768px) {
+            .section-title { font-size: 1.8rem; }
+            .stat-number { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══════════════════════════════════ NAVBAR ══════════════════════════════════ -->
+    <nav class="navbar" id="navbar">
+        <div style="max-width:1200px; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:70px;">
+            <!-- Logo -->
+            <a href="#home" style="display:flex; align-items:center; gap:0.6rem; text-decoration:none; color:white;">
+                <svg class="lasallian-star" width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700" stroke="#FFD700" stroke-width="1"/>
+                    <circle cx="50" cy="50" r="15" fill="#006633" stroke="#FFD700" stroke-width="2"/>
+                    <text x="50" y="56" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold" font-family="Montserrat">✦</text>
+                </svg>
+                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.15rem; letter-spacing:0.5px;">
+                    Green <span style="color:#FFD700;">La Salle</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <div style="display:flex; gap:2rem; align-items:center;" class="desktop-nav">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#problems" class="nav-link">Problems</a>
+                <a href="#contribution" class="nav-link">My Contribution</a>
+                <a href="#video" class="nav-link">Video</a>
+            </div>
+
+            <!-- Hamburger -->
+            <button class="hamburger" id="hamburgerBtn" style="display:none; background:none; border:none; cursor:pointer; padding:0.5rem;" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu" style="position:fixed; top:70px; right:0; width:260px; height:calc(100vh - 70px); background:rgba(0,50,25,0.98); display:flex; flex-direction:column; padding:2rem;">
+            <a href="#home" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">🏠 Home</a>
+            <a href="#about" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">🌍 About</a>
+            <a href="#problems" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">⚠️ Problems</a>
+            <a href="#contribution" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">🤝 My Contribution</a>
+            <a href="#video" class="nav-link" style="padding:1rem 0; font-size:1.1rem;">🎬 Video</a>
+        </div>
+    </nav>
+
+    <!-- ══════════════════════════════════ HERO ══════════════════════════════════ -->
+    <section class="hero" id="home">
+        <!-- Floating Particles -->
+        <div id="particles" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
+
+        <!-- Decorative Stars -->
+        <div style="position:absolute; top:10%; left:5%; opacity:0.08;">
+            <svg width="120" height="120" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        </div>
+        <div style="position:absolute; bottom:15%; right:8%; opacity:0.06;">
+            <svg width="180" height="180" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        </div>
+
+        <div style="position:relative; z-index:2; text-align:center; padding:2rem; max-width:900px;">
+            <!-- Lasallian Shield -->
+            <div class="fade-in" style="margin-bottom:1.5rem;">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700" opacity="0.9"/>
+                    <circle cx="50" cy="48" r="18" fill="none" stroke="white" stroke-width="2" opacity="0.8"/>
+                    <path d="M50 32 L50 64 M36 48 L64 48" stroke="white" stroke-width="2.5" opacity="0.8"/>
+                </svg>
+            </div>
+
+            <p class="fade-in" style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.95rem; color:#FFD700; letter-spacing:3px; text-transform:uppercase; margin-bottom:1rem; transition-delay:0.1s;">
+                Lasallian Environmental Advocacy
+            </p>
+
+            <h1 class="fade-in" style="font-family:'Montserrat',sans-serif; font-weight:900; font-size:clamp(2.2rem, 5.5vw, 4.2rem); color:white; line-height:1.15; margin-bottom:1.5rem; transition-delay:0.2s;">
+                Protect Our Planet,<br>
+                <span style="color:#FFD700;">Preserve Our Future</span> 🌿
+            </h1>
+
+            <p class="fade-in" style="font-size:1.15rem; color:rgba(255,255,255,0.85); max-width:650px; margin:0 auto 2.5rem; line-height:1.7; transition-delay:0.3s;">
+                As Lasallians, we are called to be stewards of creation. Together, we can champion environmental sustainability and build a greener, more just world for generations to come.
+            </p>
+
+            <div class="fade-in" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; transition-delay:0.4s;">
+                <a href="#about" class="cta-button">
+                    Learn More 🌎
+                </a>
+                <a href="#video" style="display:inline-flex; align-items:center; gap:0.5rem; color:white; font-family:'Montserrat',sans-serif; font-weight:600; padding:1rem 2rem; border:2px solid rgba(255,255,255,0.3); border-radius:50px; text-decoration:none; transition:all 0.3s ease;" onmouseover="this.style.borderColor='#FFD700'; this.style.color='#FFD700';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.color='white';">
+                    ▶ Watch Video
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div style="position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); text-align:center;">
+            <div style="width:28px; height:44px; border:2px solid rgba(255,255,255,0.4); border-radius:14px; position:relative; margin:0 auto 0.5rem;">
+                <div style="width:4px; height:10px; background:rgba(255,255,255,0.7); border-radius:2px; position:absolute; top:6px; left:50%; transform:translateX(-50%); animation: scrollBounce 2s infinite;"></div>
+            </div>
+            <p style="color:rgba(255,255,255,0.5); font-size:0.7rem; font-family:'Montserrat',sans-serif; letter-spacing:2px;">SCROLL</p>
+        </div>
+        <style>
+            @keyframes scrollBounce {
+                0%, 100% { transform: translateX(-50%) translateY(0); opacity:1; }
+                50% { transform: translateX(-50%) translateY(12px); opacity:0.3; }
+            }
+        </style>
+    </section>
+
+    <!-- ══════════════════════════════════ ABOUT ══════════════════════════════════ -->
+    <section id="about" style="padding:6rem 1.5rem; background:#f8fdf8; position:relative; overflow:hidden;">
+        <div class="leaf-decoration" style="top:-5rem; right:-5rem;">🍃</div>
+
+        <div style="max-width:1100px; margin:0 auto;">
+            <div style="text-align:center; margin-bottom:4rem;" class="fade-in">
+                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:var(--green-mid); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Understanding Our World</p>
+                <h2 class="section-title" style="display:inline-block;">🌍 About the Environment</h2>
+                <p style="max-width:650px; margin:1rem auto 0; color:#555; line-height:1.8; font-size:1.05rem;">
+                    The environment encompasses all living and non-living things occurring naturally on Earth. It is the foundation of all life and the source of everything we need to survive.
+                </p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:2rem; margin-bottom:3rem;">
+                <div class="fade-in-left" style="transition-delay:0.1s;">
+                    <div style="background:white; border-radius:16px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.06); border-left:4px solid var(--green-mid); height:100%;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">🌱</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem;">Ecosystems & Biodiversity</h3>
+                        <p style="color:#555; line-height:1.7;">
+                            Our planet hosts millions of species across diverse ecosystems — from tropical rainforests to deep oceans. Each organism plays a critical role in maintaining the delicate balance of nature. Biodiversity ensures ecosystem resilience, food security, and medical discoveries.
+                        </p>
+                    </div>
+                </div>
+                <div class="fade-in-right" style="transition-delay:0.2s;">
+                    <div style="background:white; border-radius:16px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.06); border-left:4px solid var(--gold); height:100%;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">💧</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem;">Natural Resources</h3>
+                        <p style="color:#555; line-height:1.7;">
+                            Clean air, fresh water, fertile soil, and rich mineral deposits are the lifeblood of civilization. These resources sustain agriculture, industry, and human health. Yet they are finite — and our consumption is rapidly outpacing Earth's ability to regenerate.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="scale-in" style="background:linear-gradient(135deg, var(--green-dark), var(--green-mid)); border-radius:20px; padding:3rem 2rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1.5rem; text-align:center; color:white;">
+                <div>
+                    <div class="stat-number" data-target="8">0</div>
+                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">Million Species<br>on Earth</p>
+                </div>
+                <div>
+                    <div class="stat-number" data-target="80">0</div>
+                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">% of Forests<br>Already Lost</p>
+                </div>
+                <div>
+                    <div class="stat-number" data-target="71">0</div>
+                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">% of Earth<br>Covered by Water</p>
+                </div>
+                <div>
+                    <div class="stat-number" data-target="1">0</div>
+                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">Planet We<br>Call Home</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════ PROBLEMS ══════════════════════════════════ -->
+    <section id="problems" style="padding:6rem 1.5rem; background:white; position:relative; overflow:hidden;">
+        <div class="leaf-decoration" style="bottom:-5rem; left:-5rem; transform:rotate(45deg);">🌿</div>
+
+        <div style="max-width:1100px; margin:0 auto;">
+            <div style="text-align:center; margin-bottom:4rem;" class="fade-in">
+                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:#d32f2f; letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Urgent Challenges</p>
+                <h2 class="section-title">⚠️ Environmental Problems</h2>
+                <p style="max-width:650px; margin:1rem auto 0; color:#555; line-height:1.8; font-size:1.05rem;">
+                    Human activities have pushed our planet to the brink. These are the critical environmental crises demanding immediate action.
+                </p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;">
+                <div class="problem-card fade-in" style="transition-delay:0.05s;">
+                    <div style="font-size:2.5rem; margin-bottom:1rem;">🌡️</div>
+                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Climate Change</h3>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                        Rising global temperatures caused by greenhouse gas emissions are leading to extreme weather events, melting ice caps, and rising sea levels. This threatens coastal communities, agriculture, and countless species.
+                    </p>
+                </div>
+
+                <div class="problem-card fade-in" style="transition-delay:0.15s;">
+                    <div style="font-size:2.5rem; margin-bottom:1rem;">🏭</div>
+                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Air Pollution</h3>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                        Industrial emissions, vehicle exhaust, and burning fossil fuels release harmful pollutants into the atmosphere. Air pollution causes respiratory diseases and contributes to approximately 7 million premature deaths annually worldwide.
+                    </p>
+                </div>
+
+                <div class="problem-card fade-in" style="transition-delay:0.25s;">
+                    <div style="font-size:2.5rem; margin-bottom:1rem;">🌊</div>
+                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Ocean Pollution</h3>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                        Over 8 million tons of plastic enter the oceans each year, devastating marine life. Microplastics have been found in the deepest ocean trenches and even in human bloodstreams, creating a crisis that spans the entire food chain.
+                    </p>
+                </div>
+
+                <div class="problem-card fade-in" style="transition-delay:0.35s;">
+                    <div style="font-size:2.5rem; margin-bottom:1rem;">🪓</div>
+                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Deforestation</h3>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                        Approximately 10 million hectares of forest are lost every year to logging, agriculture, and urbanization. Forests are vital carbon sinks, and their destruction accelerates climate change while destroying habitats for wildlife.
+                    </p>
+                </div>
+
+                <div class="problem-card fade-in" style="transition-delay:0.45s;">
+                    <div style="font-size:2.5rem; margin-bottom:1rem;">💀</div>
+                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Species Extinction</h3>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                        We are experiencing the sixth mass extinction, with species disappearing at 1,000 times the natural rate. Habitat loss, poaching, and climate change threaten over 1 million species with extinction in the coming decades.
+                    </p>
+                </div>
+
+                <div class="problem-card fade-in" style="transition-delay:0.55s;">
+                    <div style="font-size:2.5rem; margin-bottom:1rem;">🚰</div>
+                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Water Scarcity</h3>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                        Over 2 billion people lack access to safe drinking water. Pollution, over-extraction, and climate change are depleting freshwater reserves worldwide, creating conflicts and humanitarian crises across vulnerable regions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════ CONTRIBUTION ══════════════════════════════════ -->
+    <section id="contribution" style="padding:6rem 1.5rem; background:linear-gradient(180deg, #f0f9f0, #e8f5e9); position:relative; overflow:hidden;">
+        <div style="max-width:1100px; margin:0 auto;">
+            <div style="text-align:center; margin-bottom:4rem;" class="fade-in">
+                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:var(--green-mid); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Taking Action</p>
+                <h2 class="section-title">🤝 My Contribution</h2>
+                <p style="max-width:700px; margin:1rem auto 0; color:#555; line-height:1.8; font-size:1.05rem;">
+                    As a Lasallian, I believe that change begins with individual action. Guided by the values of faith, zeal for service, and communion in mission, here are the ways I contribute to environmental sustainability.
+                </p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-bottom:3rem;">
+                <div class="contribution-card fade-in" style="transition-delay:0.1s;">
+                    <div style="position:relative; z-index:1;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">♻️</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Reduce, Reuse, Recycle</h3>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                            I practice the 3Rs daily — minimizing waste, repurposing items, and properly sorting recyclables. I carry reusable bags, bottles, and containers to reduce single-use plastic consumption.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contribution-card fade-in" style="transition-delay:0.2s;">
+                    <div style="position:relative; z-index:1;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">🌳</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Tree Planting & Gardening</h3>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                            I participate in community tree-planting drives and maintain a small garden at home. Growing native plants helps support local biodiversity and contributes to carbon sequestration in our neighborhood.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contribution-card fade-in" style="transition-delay:0.3s;">
+                    <div style="position:relative; z-index:1;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">📢</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Awareness & Education</h3>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                            I use social media and school platforms to spread awareness about environmental issues. Educating peers and community members creates a ripple effect of conscious, eco-friendly decision-making.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contribution-card fade-in" style="transition-delay:0.4s;">
+                    <div style="position:relative; z-index:1;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">⚡</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Energy Conservation</h3>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                            I make conscious choices to conserve energy — turning off unused lights, unplugging devices, and choosing energy-efficient appliances. Every kilowatt saved is a step toward reducing our carbon footprint.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contribution-card fade-in" style="transition-delay:0.5s;">
+                    <div style="position:relative; z-index:1;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">🚶</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Sustainable Transport</h3>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                            Whenever possible, I walk, bike, or use public transport instead of private vehicles. Reducing fossil fuel dependency in daily commuting significantly lowers individual greenhouse gas emissions.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contribution-card fade-in" style="transition-delay:0.6s;">
+                    <div style="position:relative; z-index:1;">
+                        <div style="font-size:2.5rem; margin-bottom:1rem;">🧹</div>
+                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Community Cleanups</h3>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                            I join and organize cleanup drives in our school, neighborhood, and local waterways. Removing litter and waste from public spaces helps protect wildlife and fosters a culture of environmental responsibility.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quote -->
+            <div class="scale-in" style="background:white; border-radius:20px; padding:3rem; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.06); border:2px solid #e8f5e9; position:relative;">
+                <svg style="position:absolute; top:1rem; left:2rem; opacity:0.08;" width="60" height="60" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#006633"/></svg>
+                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:1.3rem; color:var(--green-dark); font-style:italic; line-height:1.6; max-width:700px; margin:0 auto;">
+                    "The earth is what we all have in common."
+                </p>
+                <p style="color:var(--green-mid); margin-top:0.75rem; font-weight:600;">— Wendell Berry</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════ VIDEO ══════════════════════════════════ -->
+    <section id="video" style="padding:6rem 1.5rem; background:linear-gradient(160deg, #002b17, var(--green-dark), #004d26); position:relative; overflow:hidden;">
+        <!-- Decorative Stars -->
+        <div style="position:absolute; top:5%; right:10%; opacity:0.06;">
+            <svg width="150" height="150" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        </div>
+        <div style="position:absolute; bottom:10%; left:5%; opacity:0.04;">
+            <svg width="100" height="100" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        </div>
+
+        <div style="max-width:1000px; margin:0 auto; position:relative; z-index:2;">
+            <div style="text-align:center; margin-bottom:3rem;" class="fade-in">
+                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Watch & Learn</p>
+                <h2 style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:2.5rem; color:white; margin-bottom:1rem;">
+                    🎬 Advocacy Video
+                </h2>
+                <div style="width:60px; height:4px; background:linear-gradient(90deg, var(--gold), var(--green-mid)); border-radius:2px; margin:0 auto 1.5rem;"></div>
+                <p style="color:rgba(255,255,255,0.8); max-width:600px; margin:0 auto; line-height:1.8; font-size:1.05rem;">
+                    Watch this powerful video that highlights the importance of environmental awareness and the urgent need for collective action to protect our planet.
+                </p>
+            </div>
+
+            <div class="scale-in" style="transition-delay:0.2s;">
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/h8dWsl4zugo?si=W-3P5BNJc2Go06vH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="fade-in" style="text-align:center; margin-top:2.5rem; transition-delay:0.4s;">
+                <p style="color:rgba(255,255,255,0.6); font-size:0.9rem; font-style:italic;">
+                    🌿 "We do not inherit the earth from our ancestors; we borrow it from our children." — Native American Proverb
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════ FOOTER ══════════════════════════════════ -->
+    <footer style="padding:3rem 1.5rem 1.5rem; text-align:center; color:rgba(255,255,255,0.7);">
+        <div style="max-width:1100px; margin:0 auto;">
+            <div style="display:flex; align-items:center; justify-content:center; gap:0.6rem; margin-bottom:1rem;">
+                <svg width="28" height="28" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.1rem; color:white;">
+                    Green <span style="color:#FFD700;">La Salle</span>
+                </span>
+            </div>
+            <p style="font-size:0.9rem; margin-bottom:0.5rem;">
+                Live Jesus in our hearts. 💚 Forever.
+            </p>
+            <p style="font-size:0.85rem; margin-bottom:1.5rem;">
+                Lasallian Environmental Advocacy • Committed to a Sustainable Future
+            </p>
+            <div style="width:80px; height:1px; background:rgba(255,255,255,0.15); margin:0 auto 1.5rem;"></div>
+            <p style="font-size:0.75rem; opacity:0.5;">
+                © 2025 Green La Salle. All rights reserved. Made with 💛 for Mother Earth.
+            </p>
+        </div>
+    </footer>
+
+    <!-- ══════════════════════════════════ JAVASCRIPT ══════════════════════════════════ -->
+    <script>
+        // ── Responsive nav display ──
+        function handleResize() {
+            const desktopNav = document.querySelector('.desktop-nav');
+            const hamburger = document.getElementById('hamburgerBtn');
+            if (window.innerWidth <= 768) {
+                desktopNav.style.display = 'none';
+                hamburger.style.display = 'block';
+            } else {
+                desktopNav.style.display = 'flex';
+                hamburger.style.display = 'none';
+                document.getElementById('mobileMenu').classList.remove('open');
+                document.getElementById('hamburgerBtn').classList.remove('active');
+            }
+        }
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // ── Mobile menu toggle ──
+        document.getElementById('hamburgerBtn').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.getElementById('mobileMenu').classList.toggle('open');
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('#mobileMenu .nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileMenu').classList.remove('open');
+                document.getElementById('hamburgerBtn').classList.remove('active');
+            });
+        });
+
+        // ── Navbar scroll effect ──
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // ── Active nav link on scroll ──
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
+
+        function updateActiveNav() {
+            const scrollPos = window.scrollY + 100;
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.offsetHeight;
+                const id = section.getAttribute('id');
+                if (scrollPos >= top && scrollPos < top + height) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+        window.addEventListener('scroll', updateActiveNav);
+
+        // ── Scroll Animations (Intersection Observer) ──
+        const animElements = document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .scale-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+        animElements.forEach(el => observer.observe(el));
+
+        // ── Stat Counter Animation ──
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.getAttribute('data-target'));
+                    let current = 0;
+                    const increment = target / 40;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            el.textContent = target + (target === 1 ? '' : '+');
+                            clearInterval(timer);
+                        } else {
+                            el.textContent = Math.floor(current);
+                        }
+                    }, 40);
+                    statObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statNumbers.forEach(el => statObserver.observe(el));
+
+        // ── Hero Particles ──
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 8 + 3;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+    </script>
+</body>
+</html>
