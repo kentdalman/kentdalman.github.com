@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Russo+One&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --green-dark: #006633;
@@ -16,103 +16,126 @@
             --gold: #FFD700;
             --gold-dark: #c5a600;
             --white: #ffffff;
+            --cream: #f5e6c8;
+            --parchment: #e8d5a8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            color: #333;
+            font-family: 'Oswald', sans-serif;
+            color: #1a1a1a;
             overflow-x: hidden;
+            background: var(--cream);
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Grain overlay for whole page */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.06;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
         }
 
         /* ── Navbar ── */
         .navbar {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(0, 102, 51, 0.95);
-            backdrop-filter: blur(10px);
-            transition: box-shadow 0.3s ease, background 0.3s ease;
+            background: var(--green-dark);
+            border-bottom: 4px solid var(--gold);
+            transition: box-shadow 0.3s ease;
         }
         .navbar.scrolled {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            background: rgba(0, 70, 35, 0.98);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         .nav-link {
             position: relative;
             color: var(--white);
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Oswald', sans-serif;
             font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
             padding: 0.5rem 0;
             text-decoration: none;
+            text-transform: uppercase;
             transition: color 0.3s ease;
         }
         .nav-link::after {
-            content: '';
+            content: '★';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gold);
-            transition: width 0.3s ease;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            color: var(--gold);
+            font-size: 0.6rem;
+            transition: transform 0.3s ease;
         }
         .nav-link:hover { color: var(--gold); }
         .nav-link:hover::after,
-        .nav-link.active::after { width: 100%; }
+        .nav-link.active::after { transform: translateX(-50%) scale(1); }
         .nav-link.active { color: var(--gold); }
 
         /* ── Hero ── */
         .hero {
             min-height: 100vh;
-            background: linear-gradient(160deg, #003d1f 0%, var(--green-dark) 30%, var(--green-mid) 70%, #00a855 100%);
+            background: var(--green-dark);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
         }
-        .hero::before {
-            content: '';
+
+        /* Sunburst rays */
+        .sunburst {
             position: absolute;
-            top: -50%;
-            right: -30%;
-            width: 80%;
-            height: 200%;
-            background: radial-gradient(ellipse, rgba(255,215,0,0.06) 0%, transparent 70%);
-            animation: heroGlow 8s ease-in-out infinite alternate;
+            top: 50%; left: 50%;
+            width: 200vmax; height: 200vmax;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            animation: rotateSlow 60s linear infinite;
         }
-        @keyframes heroGlow {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-5%, 5%) scale(1.1); }
+        @keyframes rotateSlow {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .sunburst .ray {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 0; height: 0;
+            transform-origin: bottom center;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 100vmax solid rgba(255, 215, 0, 0.06);
         }
 
-        /* ── Floating Particles ── */
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 215, 0, 0.15);
-            animation: floatParticle linear infinite;
-        }
-        @keyframes floatParticle {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* ── Lasallian Star SVG ── */
-        .lasallian-star {
-            display: inline-block;
+        /* Propaganda banner stripe */
+        .banner-stripe {
+            background: var(--gold);
+            color: var(--green-dark);
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.9rem;
+            padding: 0.6rem 0;
+            text-align: center;
+            border-top: 3px solid var(--green-dark);
+            border-bottom: 3px solid var(--green-dark);
+            position: relative;
+            overflow: hidden;
         }
 
         /* ── Scroll Animations ── */
@@ -155,10 +178,12 @@
 
         /* ── Section Styling ── */
         .section-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 2.5rem;
+            font-family: 'Anton', sans-serif;
+            font-weight: 400;
+            font-size: 3rem;
             color: var(--green-dark);
+            text-transform: uppercase;
+            letter-spacing: 4px;
             position: relative;
             display: inline-block;
             margin-bottom: 1rem;
@@ -166,70 +191,62 @@
         .section-title::after {
             content: '';
             display: block;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--green-mid));
-            border-radius: 2px;
+            width: 100%;
+            height: 5px;
+            background: var(--gold);
             margin-top: 0.5rem;
         }
 
-        /* ── Cards ── */
+        /* ── Problem Cards — Propaganda style ── */
         .problem-card {
-            background: var(--white);
-            border-radius: 16px;
+            background: var(--cream);
+            border: 3px solid var(--green-dark);
             padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: 1px solid #e8f5e9;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             overflow: hidden;
         }
         .problem-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--green-dark), var(--gold));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
+            top: 0; left: 0;
+            width: 100%; height: 6px;
+            background: var(--gold);
+        }
+        .problem-card::after {
+            content: '★';
+            position: absolute;
+            top: 8px; right: 12px;
+            color: var(--gold);
+            font-size: 1.2rem;
         }
         .problem-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,102,51,0.15);
-            border-color: var(--green-mid);
-        }
-        .problem-card:hover::before {
-            transform: scaleX(1);
+            transform: translateY(-6px) rotate(-0.5deg);
+            box-shadow: 8px 8px 0px var(--green-dark);
         }
 
+        /* ── Contribution Cards ── */
         .contribution-card {
-            background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
-            border-radius: 16px;
+            background: var(--green-dark);
+            border: 3px solid var(--gold);
             padding: 2rem;
             color: white;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-        .contribution-card::after {
+        .contribution-card::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-            transition: transform 0.5s ease;
+            top: -40px; right: -40px;
+            width: 80px; height: 80px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            opacity: 0.15;
         }
         .contribution-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(0,102,51,0.3);
-        }
-        .contribution-card:hover::after {
-            transform: translate(-20%, 20%);
+            transform: translateY(-6px) rotate(0.5deg);
+            box-shadow: 8px 8px 0px var(--gold-dark);
         }
 
         /* ── Video Responsive ── */
@@ -241,54 +258,76 @@
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+            border: 5px solid var(--gold);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
         }
         .video-container iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             border: 0;
-            border-radius: 16px;
         }
 
-        /* ── Decorative Elements ── */
-        .leaf-decoration {
-            position: absolute;
-            opacity: 0.05;
-            font-size: 15rem;
-            z-index: 0;
-            user-select: none;
-            pointer-events: none;
-        }
-
-        /* ── Button ── */
+        /* ── CTA Button — Propaganda style ── */
         .cta-button {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: linear-gradient(135deg, var(--gold), #f5c800);
+            background: var(--gold);
             color: var(--green-dark);
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
+            font-family: 'Anton', sans-serif;
+            font-weight: 400;
             padding: 1rem 2.5rem;
-            border-radius: 50px;
             text-decoration: none;
-            font-size: 1.05rem;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border: 3px solid var(--green-dark);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+            position: relative;
         }
         .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(255,215,0,0.5);
-            background: linear-gradient(135deg, #ffe34d, var(--gold));
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px rgba(0,0,0,0.4);
+            background: #ffe34d;
+        }
+
+        /* ── Stat Counter ── */
+        .stat-number {
+            font-family: 'Anton', sans-serif;
+            font-weight: 400;
+            font-size: 3.5rem;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        /* ── Propaganda decorative star ── */
+        .prop-star {
+            display: inline-block;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        /* ── Diagonal banner ── */
+        .diagonal-banner {
+            position: absolute;
+            top: 30px; right: -50px;
+            background: var(--gold);
+            color: var(--green-dark);
+            font-family: 'Anton', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 0.4rem 4rem;
+            transform: rotate(45deg);
+            z-index: 5;
         }
 
         /* ── Footer ── */
         footer {
-            background: linear-gradient(160deg, #002b17, var(--green-dark));
+            background: var(--green-dark);
+            border-top: 5px solid var(--gold);
         }
 
         /* ── Mobile Nav ── */
@@ -304,11 +343,10 @@
         .hamburger span {
             display: block;
             width: 24px;
-            height: 2px;
-            background: white;
-            margin: 6px 0;
+            height: 3px;
+            background: var(--gold);
+            margin: 5px 0;
             transition: all 0.3s ease;
-            border-radius: 2px;
         }
         .hamburger.active span:nth-child(1) {
             transform: rotate(45deg) translate(5px, 6px);
@@ -320,24 +358,93 @@
             transform: rotate(-45deg) translate(5px, -6px);
         }
 
-        /* ── Stat Counter ── */
-        .stat-number {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 3rem;
+        /* ── Propaganda poster frame border ── */
+        .poster-frame {
+            border: 4px solid var(--green-dark);
+            outline: 2px solid var(--gold);
+            outline-offset: 4px;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+        .poster-frame .corner-star {
+            position: absolute;
             color: var(--gold);
-            line-height: 1;
+            font-size: 1.5rem;
+        }
+        .poster-frame .corner-star.tl { top: -12px; left: -12px; }
+        .poster-frame .corner-star.tr { top: -12px; right: -12px; }
+        .poster-frame .corner-star.bl { bottom: -12px; left: -12px; }
+        .poster-frame .corner-star.br { bottom: -12px; right: -12px; }
+
+        /* Geometric border pattern */
+        .geo-border-top {
+            height: 20px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--green-dark) 0px,
+                var(--green-dark) 20px,
+                var(--gold) 20px,
+                var(--gold) 24px
+            );
+        }
+        .geo-border-bottom {
+            height: 20px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--gold) 0px,
+                var(--gold) 20px,
+                var(--green-dark) 20px,
+                var(--green-dark) 24px
+            );
         }
 
-        /* ── Scrollbar ── */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--green-dark); }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--green-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+
+        /* Propaganda halftone dots effect */
+        .halftone {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            opacity: 0.03;
+            background-image: radial-gradient(circle, #000 1px, transparent 1px);
+            background-size: 8px 8px;
+            pointer-events: none;
+        }
 
         @media (max-width: 768px) {
-            .section-title { font-size: 1.8rem; }
-            .stat-number { font-size: 2.2rem; }
+            .section-title { font-size: 2rem; letter-spacing: 2px; }
+            .stat-number { font-size: 2.5rem; }
+        }
+
+        /* Marquee animation */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .marquee-text {
+            animation: marquee 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        /* Propaganda red accent ribbon */
+        .ribbon {
+            background: #cc0000;
+            color: white;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 0.3rem 1.5rem;
+            display: inline-block;
+            font-size: 0.8rem;
+            position: relative;
+        }
+        .ribbon::before, .ribbon::after {
+            content: '★';
+            margin: 0 0.5rem;
         }
     </style>
 </head>
@@ -348,12 +455,12 @@
         <div style="max-width:1200px; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:70px;">
             <!-- Logo -->
             <a href="#home" style="display:flex; align-items:center; gap:0.6rem; text-decoration:none; color:white;">
-                <svg class="lasallian-star" width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
                     <polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700" stroke="#FFD700" stroke-width="1"/>
                     <circle cx="50" cy="50" r="15" fill="#006633" stroke="#FFD700" stroke-width="2"/>
-                    <text x="50" y="56" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold" font-family="Montserrat">✦</text>
+                    <text x="50" y="56" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold">✦</text>
                 </svg>
-                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.15rem; letter-spacing:0.5px;">
+                <span style="font-family:'Anton',sans-serif; font-size:1.2rem; letter-spacing:2px; text-transform:uppercase;">
                     Clark Kent <span style="color:#FFD700;">Dalman</span>
                 </span>
             </a>
@@ -374,141 +481,187 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div class="mobile-menu" id="mobileMenu" style="position:fixed; top:70px; right:0; width:260px; height:calc(100vh - 70px); background:rgba(0,50,25,0.98); display:flex; flex-direction:column; padding:2rem;">
-            <a href="#home" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">🏠 Home</a>
-            <a href="#about" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">🌍 About</a>
-            <a href="#problems" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">⚠️ Problems</a>
-            <a href="#contribution" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1);">🤝 My Contribution</a>
-            <a href="#video" class="nav-link" style="padding:1rem 0; font-size:1.1rem;">🎬 Video</a>
+        <div class="mobile-menu" id="mobileMenu" style="position:fixed; top:70px; right:0; width:260px; height:calc(100vh - 70px); background:var(--green-dark); display:flex; flex-direction:column; padding:2rem; border-left:3px solid var(--gold);">
+            <a href="#home" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:2px solid rgba(255,215,0,0.2);">★ Home</a>
+            <a href="#about" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:2px solid rgba(255,215,0,0.2);">★ About</a>
+            <a href="#problems" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:2px solid rgba(255,215,0,0.2);">★ Problems</a>
+            <a href="#contribution" class="nav-link" style="padding:1rem 0; font-size:1.1rem; border-bottom:2px solid rgba(255,215,0,0.2);">★ My Contribution</a>
+            <a href="#video" class="nav-link" style="padding:1rem 0; font-size:1.1rem;">★ Video</a>
         </div>
     </nav>
 
     <!-- ══════════════════════════════════ HERO ══════════════════════════════════ -->
     <section class="hero" id="home">
-        <!-- Floating Particles -->
-        <div id="particles" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
+        <!-- Sunburst Rays -->
+        <div class="sunburst" id="sunburstContainer"></div>
 
-        <!-- Decorative Stars -->
-        <div style="position:absolute; top:10%; left:5%; opacity:0.08;">
-            <svg width="120" height="120" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        <!-- Halftone overlay -->
+        <div class="halftone"></div>
+
+        <!-- Decorative large stars -->
+        <div style="position:absolute; top:8%; left:4%; opacity:0.1; z-index:1;">
+            <svg width="140" height="140" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
         </div>
-        <div style="position:absolute; bottom:15%; right:8%; opacity:0.06;">
-            <svg width="180" height="180" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        <div style="position:absolute; bottom:12%; right:6%; opacity:0.08; z-index:1;">
+            <svg width="200" height="200" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        </div>
+        <div style="position:absolute; top:20%; right:15%; opacity:0.05; z-index:1;">
+            <svg width="100" height="100" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+        </div>
+        <div style="position:absolute; bottom:25%; left:10%; opacity:0.06; z-index:1;">
+            <svg width="80" height="80" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
         </div>
 
-        <div style="position:relative; z-index:2; text-align:center; padding:2rem; max-width:900px;">
-            <!-- Lasallian Shield -->
+        <!-- Geometric side borders -->
+        <div style="position:absolute; left:0; top:0; height:100%; width:30px; z-index:2; background: repeating-linear-gradient(180deg, var(--gold) 0px, var(--gold) 15px, transparent 15px, transparent 30px); opacity:0.15;"></div>
+        <div style="position:absolute; right:0; top:0; height:100%; width:30px; z-index:2; background: repeating-linear-gradient(180deg, var(--gold) 0px, var(--gold) 15px, transparent 15px, transparent 30px); opacity:0.15;"></div>
+
+        <div style="position:relative; z-index:3; text-align:center; padding:2rem; max-width:900px;">
+            <!-- Lasallian Shield / Star -->
             <div class="fade-in" style="margin-bottom:1.5rem;">
-                <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700" opacity="0.9"/>
-                    <circle cx="50" cy="48" r="18" fill="none" stroke="white" stroke-width="2" opacity="0.8"/>
-                    <path d="M50 32 L50 64 M36 48 L64 48" stroke="white" stroke-width="2.5" opacity="0.8"/>
+                <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+                    <polygon points="50,2 62,32 97,32 68,52 79,85 50,65 21,85 32,52 3,32 38,32" fill="#FFD700" opacity="0.95"/>
+                    <circle cx="50" cy="48" r="18" fill="none" stroke="var(--green-dark)" stroke-width="3"/>
+                    <path d="M50 32 L50 64 M36 48 L64 48" stroke="var(--green-dark)" stroke-width="3"/>
                 </svg>
             </div>
 
-            <p class="fade-in" style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.95rem; color:#FFD700; letter-spacing:3px; text-transform:uppercase; margin-bottom:1rem; transition-delay:0.1s;">
-                Lasallian Environmental Advocacy
-            </p>
+            <div class="fade-in" style="transition-delay:0.05s; margin-bottom:1.2rem;">
+                <span class="ribbon">Lasallian Environmental Advocacy</span>
+            </div>
 
-            <h1 class="fade-in" style="font-family:'Montserrat',sans-serif; font-weight:900; font-size:clamp(2.2rem, 5.5vw, 4.2rem); color:white; line-height:1.15; margin-bottom:1.5rem; transition-delay:0.2s;">
-                Protect Our Planet,<br>
-                <span style="color:#FFD700;">Preserve Our Future</span> 🌿
+            <h1 class="fade-in" style="font-family:'Anton',sans-serif; font-size:clamp(2.5rem, 6vw, 5rem); color:white; line-height:1.1; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:4px; transition-delay:0.2s; text-shadow: 4px 4px 0px rgba(0,0,0,0.3);">
+                Protect Our Planet
+            </h1>
+            <h1 class="fade-in" style="font-family:'Anton',sans-serif; font-size:clamp(2.5rem, 6vw, 5rem); color:var(--gold); line-height:1.1; margin-bottom:1.5rem; text-transform:uppercase; letter-spacing:4px; transition-delay:0.25s; text-shadow: 4px 4px 0px rgba(0,0,0,0.3);">
+                Preserve Our Future
             </h1>
 
-            <p class="fade-in" style="font-size:1.15rem; color:rgba(255,255,255,0.85); max-width:650px; margin:0 auto 2.5rem; line-height:1.7; transition-delay:0.3s;">
+            <!-- Decorative line with stars -->
+            <div class="fade-in" style="transition-delay:0.3s; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:center; gap:1rem;">
+                <div style="width:80px; height:3px; background:var(--gold);"></div>
+                <span style="color:var(--gold); font-size:1.2rem;">★ 🌿 ★</span>
+                <div style="width:80px; height:3px; background:var(--gold);"></div>
+            </div>
+
+            <p class="fade-in" style="font-family:'Oswald',sans-serif; font-size:1.2rem; color:rgba(255,255,255,0.85); max-width:650px; margin:0 auto 2.5rem; line-height:1.7; font-weight:300; letter-spacing:1px; transition-delay:0.35s;">
                 As Lasallians, we are called to be stewards of creation. Together, we can champion environmental sustainability and build a greener, more just world for generations to come.
             </p>
 
-            <div class="fade-in" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; transition-delay:0.4s;">
+            <div class="fade-in" style="display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; transition-delay:0.4s;">
                 <a href="#about" class="cta-button">
-                    Learn More 🌎
+                    ★ Learn More ★
                 </a>
-                <a href="#video" style="display:inline-flex; align-items:center; gap:0.5rem; color:white; font-family:'Montserrat',sans-serif; font-weight:600; padding:1rem 2rem; border:2px solid rgba(255,255,255,0.3); border-radius:50px; text-decoration:none; transition:all 0.3s ease;" onmouseover="this.style.borderColor='#FFD700'; this.style.color='#FFD700';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.color='white';">
+                <a href="#video" style="display:inline-flex; align-items:center; gap:0.5rem; color:var(--gold); font-family:'Anton',sans-serif; padding:1rem 2rem; border:3px solid var(--gold); text-decoration:none; font-size:1.1rem; text-transform:uppercase; letter-spacing:3px; transition:all 0.3s ease; box-shadow:5px 5px 0px rgba(0,0,0,0.3);" onmouseover="this.style.background='var(--gold)'; this.style.color='var(--green-dark)';" onmouseout="this.style.background='transparent'; this.style.color='var(--gold)';">
                     ▶ Watch Video
                 </a>
             </div>
         </div>
 
-        <!-- Scroll Indicator -->
-        <div style="position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); text-align:center;">
-            <div style="width:28px; height:44px; border:2px solid rgba(255,255,255,0.4); border-radius:14px; position:relative; margin:0 auto 0.5rem;">
-                <div style="width:4px; height:10px; background:rgba(255,255,255,0.7); border-radius:2px; position:absolute; top:6px; left:50%; transform:translateX(-50%); animation: scrollBounce 2s infinite;"></div>
-            </div>
-            <p style="color:rgba(255,255,255,0.5); font-size:0.7rem; font-family:'Montserrat',sans-serif; letter-spacing:2px;">SCROLL</p>
+        <!-- Bottom Banner -->
+        <div style="position:absolute; bottom:0; left:0; width:100%; z-index:5;">
+            <div class="geo-border-top"></div>
         </div>
-        <style>
-            @keyframes scrollBounce {
-                0%, 100% { transform: translateX(-50%) translateY(0); opacity:1; }
-                50% { transform: translateX(-50%) translateY(12px); opacity:0.3; }
-            }
-        </style>
     </section>
 
-    <!-- ══════════════════════════════════ ABOUT ══════════════════════════════════ -->
-    <section id="about" style="padding:6rem 1.5rem; background:#f8fdf8; position:relative; overflow:hidden;">
-        <div class="leaf-decoration" style="top:-5rem; right:-5rem;">🍃</div>
+    <!-- ═══════════ SCROLLING BANNER ═══════════ -->
+    <div class="banner-stripe" style="overflow:hidden;">
+        <div class="marquee-text">
+            ★ PROTECT THE EARTH ★ LASALLIAN MISSION ★ ENVIRONMENTAL JUSTICE ★ GREEN REVOLUTION ★ STEWARDS OF CREATION ★ ACT NOW ★ PROTECT THE EARTH ★ LASALLIAN MISSION ★ ENVIRONMENTAL JUSTICE ★ GREEN REVOLUTION ★ STEWARDS OF CREATION ★ ACT NOW ★
+        </div>
+    </div>
 
-        <div style="max-width:1100px; margin:0 auto;">
+    <!-- ══════════════════════════════════ ABOUT ══════════════════════════════════ -->
+    <section id="about" style="padding:5rem 1.5rem; background:var(--cream); position:relative; overflow:hidden;">
+        <div class="halftone"></div>
+
+        <!-- Decorative star watermark -->
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0.03; z-index:0;">
+            <svg width="600" height="600" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="var(--green-dark)"/></svg>
+        </div>
+
+        <div style="max-width:1100px; margin:0 auto; position:relative; z-index:1;">
             <div style="text-align:center; margin-bottom:4rem;" class="fade-in">
-                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:var(--green-mid); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Understanding Our World</p>
+                <span class="ribbon" style="background:var(--green-dark); margin-bottom:1rem;">Understanding Our World</span>
+                <br><br>
                 <h2 class="section-title" style="display:inline-block;">🌍 About the Environment</h2>
-                <p style="max-width:650px; margin:1rem auto 0; color:#555; line-height:1.8; font-size:1.05rem;">
+                <p style="max-width:650px; margin:1.5rem auto 0; color:#444; line-height:1.8; font-size:1.1rem; font-family:'Oswald',sans-serif; font-weight:300; letter-spacing:0.5px;">
                     The environment encompasses all living and non-living things occurring naturally on Earth. It is the foundation of all life and the source of everything we need to survive.
                 </p>
             </div>
 
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:2rem; margin-bottom:3rem;">
                 <div class="fade-in-left" style="transition-delay:0.1s;">
-                    <div style="background:white; border-radius:16px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.06); border-left:4px solid var(--green-mid); height:100%;">
-                        <div style="font-size:2.5rem; margin-bottom:1rem;">🌱</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem;">Ecosystems & Biodiversity</h3>
-                        <p style="color:#555; line-height:1.7;">
+                    <div class="poster-frame" style="background:white; height:100%;">
+                        <span class="corner-star tl">★</span>
+                        <span class="corner-star tr">★</span>
+                        <span class="corner-star bl">★</span>
+                        <span class="corner-star br">★</span>
+                        <div style="font-size:3rem; margin-bottom:1rem; text-align:center;">🌱</div>
+                        <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.3rem; text-align:center; letter-spacing:2px;">Ecosystems & Biodiversity</h3>
+                        <div style="width:40px; height:3px; background:var(--gold); margin:0 auto 1rem;"></div>
+                        <p style="color:#555; line-height:1.7; font-family:'Oswald',sans-serif; font-weight:300;">
                             Our planet hosts millions of species across diverse ecosystems — from tropical rainforests to deep oceans. Each organism plays a critical role in maintaining the delicate balance of nature. Biodiversity ensures ecosystem resilience, food security, and medical discoveries.
                         </p>
                     </div>
                 </div>
                 <div class="fade-in-right" style="transition-delay:0.2s;">
-                    <div style="background:white; border-radius:16px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.06); border-left:4px solid var(--gold); height:100%;">
-                        <div style="font-size:2.5rem; margin-bottom:1rem;">💧</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem;">Natural Resources</h3>
-                        <p style="color:#555; line-height:1.7;">
+                    <div class="poster-frame" style="background:white; height:100%;">
+                        <span class="corner-star tl">★</span>
+                        <span class="corner-star tr">★</span>
+                        <span class="corner-star bl">★</span>
+                        <span class="corner-star br">★</span>
+                        <div style="font-size:3rem; margin-bottom:1rem; text-align:center;">💧</div>
+                        <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.3rem; text-align:center; letter-spacing:2px;">Natural Resources</h3>
+                        <div style="width:40px; height:3px; background:var(--gold); margin:0 auto 1rem;"></div>
+                        <p style="color:#555; line-height:1.7; font-family:'Oswald',sans-serif; font-weight:300;">
                             Clean air, fresh water, fertile soil, and rich mineral deposits are the lifeblood of civilization. These resources sustain agriculture, industry, and human health. Yet they are finite — and our consumption is rapidly outpacing Earth's ability to regenerate.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Stats -->
-            <div class="scale-in" style="background:linear-gradient(135deg, var(--green-dark), var(--green-mid)); border-radius:20px; padding:3rem 2rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1.5rem; text-align:center; color:white;">
-                <div>
+            <!-- Stats — Propaganda style banner -->
+            <div class="scale-in" style="background:var(--green-dark); border:4px solid var(--gold); padding:3rem 2rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1.5rem; text-align:center; color:white; position:relative; box-shadow:8px 8px 0px rgba(0,0,0,0.2);">
+                <div class="halftone" style="opacity:0.05;"></div>
+                <div style="position:relative; z-index:1;">
                     <div class="stat-number" data-target="8">0</div>
-                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">Million Species<br>on Earth</p>
+                    <p style="font-size:0.9rem; opacity:0.85; margin-top:0.3rem; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:1px;">Million Species<br>on Earth</p>
                 </div>
-                <div>
+                <div style="position:relative; z-index:1;">
                     <div class="stat-number" data-target="80">0</div>
-                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">% of Forests<br>Already Lost</p>
+                    <p style="font-size:0.9rem; opacity:0.85; margin-top:0.3rem; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:1px;">% of Forests<br>Already Lost</p>
                 </div>
-                <div>
+                <div style="position:relative; z-index:1;">
                     <div class="stat-number" data-target="71">0</div>
-                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">% of Earth<br>Covered by Water</p>
+                    <p style="font-size:0.9rem; opacity:0.85; margin-top:0.3rem; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:1px;">% of Earth<br>Covered by Water</p>
                 </div>
-                <div>
+                <div style="position:relative; z-index:1;">
                     <div class="stat-number" data-target="1">0</div>
-                    <p style="font-size:0.85rem; opacity:0.85; margin-top:0.3rem;">Planet We<br>Call Home</p>
+                    <p style="font-size:0.9rem; opacity:0.85; margin-top:0.3rem; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:1px;">Planet We<br>Call Home</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ══════════════════════════════════ PROBLEMS ══════════════════════════════════ -->
-    <section id="problems" style="padding:6rem 1.5rem; background:white; position:relative; overflow:hidden;">
-        <div class="leaf-decoration" style="bottom:-5rem; left:-5rem; transform:rotate(45deg);">🌿</div>
+    <!-- Divider banner -->
+    <div class="geo-border-bottom"></div>
 
-        <div style="max-width:1100px; margin:0 auto;">
+    <!-- ══════════════════════════════════ PROBLEMS ══════════════════════════════════ -->
+    <section id="problems" style="padding:5rem 1.5rem; background:#f0ead0; position:relative; overflow:hidden;">
+        <div class="halftone"></div>
+
+        <!-- Large watermark -->
+        <div style="position:absolute; top:-10%; right:-10%; opacity:0.03; z-index:0; font-size:30rem; font-family:'Anton',sans-serif; color:var(--green-dark); transform:rotate(-15deg); line-height:1;">
+            ⚠
+        </div>
+
+        <div style="max-width:1100px; margin:0 auto; position:relative; z-index:1;">
             <div style="text-align:center; margin-bottom:4rem;" class="fade-in">
-                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:#d32f2f; letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Urgent Challenges</p>
+                <span class="ribbon" style="margin-bottom:1rem;">Urgent Challenges</span>
+                <br><br>
                 <h2 class="section-title">⚠️ Environmental Problems</h2>
-                <p style="max-width:650px; margin:1rem auto 0; color:#555; line-height:1.8; font-size:1.05rem;">
+                <p style="max-width:650px; margin:1.5rem auto 0; color:#444; line-height:1.8; font-size:1.1rem; font-family:'Oswald',sans-serif; font-weight:300; letter-spacing:0.5px;">
                     Human activities have pushed our planet to the brink. These are the critical environmental crises demanding immediate action.
                 </p>
             </div>
@@ -516,48 +669,54 @@
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;">
                 <div class="problem-card fade-in" style="transition-delay:0.05s;">
                     <div style="font-size:2.5rem; margin-bottom:1rem;">🌡️</div>
-                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Climate Change</h3>
-                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                    <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem; letter-spacing:2px;">Climate Change</h3>
+                    <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                         Rising global temperatures caused by greenhouse gas emissions are leading to extreme weather events, melting ice caps, and rising sea levels. This threatens coastal communities, agriculture, and countless species.
                     </p>
                 </div>
 
                 <div class="problem-card fade-in" style="transition-delay:0.15s;">
                     <div style="font-size:2.5rem; margin-bottom:1rem;">🏭</div>
-                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Air Pollution</h3>
-                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                    <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem; letter-spacing:2px;">Air Pollution</h3>
+                    <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                         Industrial emissions, vehicle exhaust, and burning fossil fuels release harmful pollutants into the atmosphere. Air pollution causes respiratory diseases and contributes to approximately 7 million premature deaths annually worldwide.
                     </p>
                 </div>
 
                 <div class="problem-card fade-in" style="transition-delay:0.25s;">
                     <div style="font-size:2.5rem; margin-bottom:1rem;">🌊</div>
-                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Ocean Pollution</h3>
-                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                    <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem; letter-spacing:2px;">Ocean Pollution</h3>
+                    <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                         Over 8 million tons of plastic enter the oceans each year, devastating marine life. Microplastics have been found in the deepest ocean trenches and even in human bloodstreams, creating a crisis that spans the entire food chain.
                     </p>
                 </div>
 
                 <div class="problem-card fade-in" style="transition-delay:0.35s;">
                     <div style="font-size:2.5rem; margin-bottom:1rem;">🪓</div>
-                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Deforestation</h3>
-                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                    <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem; letter-spacing:2px;">Deforestation</h3>
+                    <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                         Approximately 10 million hectares of forest are lost every year to logging, agriculture, and urbanization. Forests are vital carbon sinks, and their destruction accelerates climate change while destroying habitats for wildlife.
                     </p>
                 </div>
 
                 <div class="problem-card fade-in" style="transition-delay:0.45s;">
                     <div style="font-size:2.5rem; margin-bottom:1rem;">💀</div>
-                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Species Extinction</h3>
-                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                    <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem; letter-spacing:2px;">Species Extinction</h3>
+                    <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                         We are experiencing the sixth mass extinction, with species disappearing at 1,000 times the natural rate. Habitat loss, poaching, and climate change threaten over 1 million species with extinction in the coming decades.
                     </p>
                 </div>
 
                 <div class="problem-card fade-in" style="transition-delay:0.55s;">
                     <div style="font-size:2.5rem; margin-bottom:1rem;">🚰</div>
-                    <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; color:var(--green-dark); margin-bottom:0.75rem;">Water Scarcity</h3>
-                    <p style="color:#555; line-height:1.7; font-size:0.95rem;">
+                    <h3 style="font-family:'Anton',sans-serif; color:var(--green-dark); margin-bottom:0.75rem; font-size:1.2rem; letter-spacing:2px;">Water Scarcity</h3>
+                    <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                    <p style="color:#555; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                         Over 2 billion people lack access to safe drinking water. Pollution, over-extraction, and climate change are depleting freshwater reserves worldwide, creating conflicts and humanitarian crises across vulnerable regions.
                     </p>
                 </div>
@@ -565,13 +724,26 @@
         </div>
     </section>
 
+    <!-- Divider banner -->
+    <div class="banner-stripe" style="font-size:1rem; letter-spacing:6px; padding:0.8rem 0;">
+        ★ ★ ★ THE PEOPLE DEMAND ACTION ★ ★ ★
+    </div>
+
     <!-- ══════════════════════════════════ CONTRIBUTION ══════════════════════════════════ -->
-    <section id="contribution" style="padding:6rem 1.5rem; background:linear-gradient(180deg, #f0f9f0, #e8f5e9); position:relative; overflow:hidden;">
-        <div style="max-width:1100px; margin:0 auto;">
+    <section id="contribution" style="padding:5rem 1.5rem; background:var(--cream); position:relative; overflow:hidden;">
+        <div class="halftone"></div>
+
+        <!-- Giant star watermark -->
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0.02; z-index:0;">
+            <svg width="800" height="800" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="var(--green-dark)"/></svg>
+        </div>
+
+        <div style="max-width:1100px; margin:0 auto; position:relative; z-index:1;">
             <div style="text-align:center; margin-bottom:4rem;" class="fade-in">
-                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:var(--green-mid); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Taking Action</p>
+                <span class="ribbon" style="background:var(--green-dark); margin-bottom:1rem;">Taking Action</span>
+                <br><br>
                 <h2 class="section-title">🤝 My Contribution</h2>
-                <p style="max-width:700px; margin:1rem auto 0; color:#555; line-height:1.8; font-size:1.05rem;">
+                <p style="max-width:700px; margin:1.5rem auto 0; color:#444; line-height:1.8; font-size:1.1rem; font-family:'Oswald',sans-serif; font-weight:300; letter-spacing:0.5px;">
                     As a Lasallian, I believe that change begins with individual action. Guided by the values of faith, zeal for service, and communion in mission, here are the ways I contribute to environmental sustainability.
                 </p>
             </div>
@@ -580,8 +752,9 @@
                 <div class="contribution-card fade-in" style="transition-delay:0.1s;">
                     <div style="position:relative; z-index:1;">
                         <div style="font-size:2.5rem; margin-bottom:1rem;">♻️</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Reduce, Reuse, Recycle</h3>
-                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                        <h3 style="font-family:'Anton',sans-serif; font-size:1.15rem; margin-bottom:0.75rem; letter-spacing:2px;">Reduce, Reuse, Recycle</h3>
+                        <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                             I practice the 3Rs daily — minimizing waste, repurposing items, and properly sorting recyclables. I carry reusable bags, bottles, and containers to reduce single-use plastic consumption.
                         </p>
                     </div>
@@ -590,8 +763,9 @@
                 <div class="contribution-card fade-in" style="transition-delay:0.2s;">
                     <div style="position:relative; z-index:1;">
                         <div style="font-size:2.5rem; margin-bottom:1rem;">🌳</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Tree Planting & Gardening</h3>
-                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                        <h3 style="font-family:'Anton',sans-serif; font-size:1.15rem; margin-bottom:0.75rem; letter-spacing:2px;">Tree Planting & Gardening</h3>
+                        <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                             I participate in community tree-planting drives and maintain a small garden at home. Growing native plants helps support local biodiversity and contributes to carbon sequestration in our neighborhood.
                         </p>
                     </div>
@@ -600,8 +774,9 @@
                 <div class="contribution-card fade-in" style="transition-delay:0.3s;">
                     <div style="position:relative; z-index:1;">
                         <div style="font-size:2.5rem; margin-bottom:1rem;">📢</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Awareness & Education</h3>
-                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                        <h3 style="font-family:'Anton',sans-serif; font-size:1.15rem; margin-bottom:0.75rem; letter-spacing:2px;">Awareness & Education</h3>
+                        <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                             I use social media and school platforms to spread awareness about environmental issues. Educating peers and community members creates a ripple effect of conscious, eco-friendly decision-making.
                         </p>
                     </div>
@@ -610,8 +785,9 @@
                 <div class="contribution-card fade-in" style="transition-delay:0.4s;">
                     <div style="position:relative; z-index:1;">
                         <div style="font-size:2.5rem; margin-bottom:1rem;">⚡</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Energy Conservation</h3>
-                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                        <h3 style="font-family:'Anton',sans-serif; font-size:1.15rem; margin-bottom:0.75rem; letter-spacing:2px;">Energy Conservation</h3>
+                        <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                             I make conscious choices to conserve energy — turning off unused lights, unplugging devices, and choosing energy-efficient appliances. Every kilowatt saved is a step toward reducing our carbon footprint.
                         </p>
                     </div>
@@ -620,8 +796,9 @@
                 <div class="contribution-card fade-in" style="transition-delay:0.5s;">
                     <div style="position:relative; z-index:1;">
                         <div style="font-size:2.5rem; margin-bottom:1rem;">🚶</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Sustainable Transport</h3>
-                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                        <h3 style="font-family:'Anton',sans-serif; font-size:1.15rem; margin-bottom:0.75rem; letter-spacing:2px;">Sustainable Transport</h3>
+                        <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                             Whenever possible, I walk, bike, or use public transport instead of private vehicles. Reducing fossil fuel dependency in daily commuting significantly lowers individual greenhouse gas emissions.
                         </p>
                     </div>
@@ -630,43 +807,63 @@
                 <div class="contribution-card fade-in" style="transition-delay:0.6s;">
                     <div style="position:relative; z-index:1;">
                         <div style="font-size:2.5rem; margin-bottom:1rem;">🧹</div>
-                        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:0.75rem;">Community Cleanups</h3>
-                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem;">
+                        <h3 style="font-family:'Anton',sans-serif; font-size:1.15rem; margin-bottom:0.75rem; letter-spacing:2px;">Community Cleanups</h3>
+                        <div style="width:30px; height:3px; background:var(--gold); margin-bottom:0.75rem;"></div>
+                        <p style="opacity:0.9; line-height:1.7; font-size:0.95rem; font-family:'Oswald',sans-serif; font-weight:300;">
                             I join and organize cleanup drives in our school, neighborhood, and local waterways. Removing litter and waste from public spaces helps protect wildlife and fosters a culture of environmental responsibility.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Quote -->
-            <div class="scale-in" style="background:white; border-radius:20px; padding:3rem; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.06); border:2px solid #e8f5e9; position:relative;">
-                <svg style="position:absolute; top:1rem; left:2rem; opacity:0.08;" width="60" height="60" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#006633"/></svg>
-                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:1.3rem; color:var(--green-dark); font-style:italic; line-height:1.6; max-width:700px; margin:0 auto;">
+            <!-- Quote — Propaganda poster style -->
+            <div class="scale-in" style="background:var(--green-dark); border:5px solid var(--gold); padding:3rem; text-align:center; position:relative; box-shadow:8px 8px 0px rgba(0,0,0,0.2);">
+                <div class="halftone" style="opacity:0.05;"></div>
+                <!-- Corner decorations -->
+                <div style="position:absolute; top:10px; left:10px; color:var(--gold); font-size:1.5rem;">★</div>
+                <div style="position:absolute; top:10px; right:10px; color:var(--gold); font-size:1.5rem;">★</div>
+                <div style="position:absolute; bottom:10px; left:10px; color:var(--gold); font-size:1.5rem;">★</div>
+                <div style="position:absolute; bottom:10px; right:10px; color:var(--gold); font-size:1.5rem;">★</div>
+
+                <p style="font-family:'Anton',sans-serif; font-size:1.6rem; color:var(--gold); text-transform:uppercase; letter-spacing:3px; line-height:1.5; max-width:700px; margin:0 auto; position:relative; z-index:1;">
                     "The earth is what we all have in common."
                 </p>
-                <p style="color:var(--green-mid); margin-top:0.75rem; font-weight:600;">— Wendell Berry</p>
+                <div style="width:60px; height:3px; background:var(--gold); margin:1rem auto;"></div>
+                <p style="color:var(--gold); font-family:'Oswald',sans-serif; font-weight:600; font-size:1.1rem; text-transform:uppercase; letter-spacing:2px; position:relative; z-index:1;">— Wendell Berry</p>
             </div>
         </div>
     </section>
 
     <!-- ══════════════════════════════════ VIDEO ══════════════════════════════════ -->
-    <section id="video" style="padding:6rem 1.5rem; background:linear-gradient(160deg, #002b17, var(--green-dark), #004d26); position:relative; overflow:hidden;">
+    <section id="video" style="padding:5rem 1.5rem; background:var(--green-dark); position:relative; overflow:hidden;">
+        <div class="halftone" style="opacity:0.04;"></div>
+
+        <!-- Sunburst for video section -->
+        <div style="position:absolute; top:50%; left:50%; width:150vmax; height:150vmax; transform:translate(-50%,-50%); z-index:0; opacity:0.04;">
+            <div style="width:100%; height:100%; background: repeating-conic-gradient(var(--gold) 0deg 5deg, transparent 5deg 10deg); border-radius:50%;"></div>
+        </div>
+
         <!-- Decorative Stars -->
-        <div style="position:absolute; top:5%; right:10%; opacity:0.06;">
+        <div style="position:absolute; top:5%; right:10%; opacity:0.08; z-index:1;">
             <svg width="150" height="150" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
         </div>
-        <div style="position:absolute; bottom:10%; left:5%; opacity:0.04;">
+        <div style="position:absolute; bottom:10%; left:5%; opacity:0.06; z-index:1;">
             <svg width="100" height="100" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
         </div>
 
         <div style="max-width:1000px; margin:0 auto; position:relative; z-index:2;">
             <div style="text-align:center; margin-bottom:3rem;" class="fade-in">
-                <p style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.85rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.5rem;">Watch & Learn</p>
-                <h2 style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:2.5rem; color:white; margin-bottom:1rem;">
+                <span class="ribbon" style="margin-bottom:1rem;">Watch & Learn</span>
+                <br><br>
+                <h2 style="font-family:'Anton',sans-serif; font-size:3rem; color:white; margin-bottom:1rem; text-transform:uppercase; letter-spacing:4px; text-shadow:3px 3px 0px rgba(0,0,0,0.3);">
                     🎬 Advocacy Video
                 </h2>
-                <div style="width:60px; height:4px; background:linear-gradient(90deg, var(--gold), var(--green-mid)); border-radius:2px; margin:0 auto 1.5rem;"></div>
-                <p style="color:rgba(255,255,255,0.8); max-width:600px; margin:0 auto; line-height:1.8; font-size:1.05rem;">
+                <div style="display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.5rem;">
+                    <div style="width:60px; height:3px; background:var(--gold);"></div>
+                    <span style="color:var(--gold);">★</span>
+                    <div style="width:60px; height:3px; background:var(--gold);"></div>
+                </div>
+                <p style="color:rgba(255,255,255,0.8); max-width:600px; margin:0 auto; line-height:1.8; font-size:1.1rem; font-family:'Oswald',sans-serif; font-weight:300; letter-spacing:0.5px;">
                     Watch this powerful video that highlights the importance of environmental awareness and the urgent need for collective action to protect our planet.
                 </p>
             </div>
@@ -678,29 +875,41 @@
             </div>
 
             <div class="fade-in" style="text-align:center; margin-top:2.5rem; transition-delay:0.4s;">
-                <p style="color:rgba(255,255,255,0.6); font-size:0.9rem; font-style:italic;">
-                    🌿 "Optimism is a strategy for making a better future. Because unless you believe that the future can be better, it’s unlikely you will step up and take responsibility for making it so. If you assume that there’s no hope, you guarantee that there will be no hope. If you assume that there is an instinct for freedom, there are opportunities to change things, there’s a chance you may contribute to making a better world. The choice is yours." — Noam Chomsky
+                <div style="border:2px solid rgba(255,215,0,0.3); padding:1.5rem 2rem; display:inline-block; max-width:800px;">
+                    <p style="color:rgba(255,255,255,0.6); font-size:0.9rem; font-style:italic; font-family:'Oswald',sans-serif; font-weight:300; line-height:1.7;">
+                        🌿 "Optimism is a strategy for making a better future. Because unless you believe that the future can be better, it's unlikely you will step up and take responsibility for making it so. If you assume that there's no hope, you guarantee that there will be no hope. If you assume that there is an instinct for freedom, there are opportunities to change things, there's a chance you may contribute to making a better world. The choice is yours." — Noam Chomsky
+                    </p>
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- Bottom geometric border -->
+    <div class="geo-border-top"></div>
 
     <!-- ══════════════════════════════════ FOOTER ══════════════════════════════════ -->
     <footer style="padding:3rem 1.5rem 1.5rem; text-align:center; color:rgba(255,255,255,0.7);">
         <div style="max-width:1100px; margin:0 auto;">
             <div style="display:flex; align-items:center; justify-content:center; gap:0.6rem; margin-bottom:1rem;">
-                <svg width="28" height="28" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
-                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.1rem; color:white;">
+                <svg width="32" height="32" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
+                <span style="font-family:'Anton',sans-serif; font-size:1.3rem; color:white; text-transform:uppercase; letter-spacing:3px;">
                     Green <span style="color:#FFD700;">La Salle</span>
                 </span>
+                <svg width="32" height="32" viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 67,55 78,88 50,68 22,88 33,55 5,35 39,35" fill="#FFD700"/></svg>
             </div>
-            <p style="font-size:0.9rem; margin-bottom:0.5rem;">
+            <div style="width:60px; height:3px; background:var(--gold); margin:0 auto 1rem;"></div>
+            <p style="font-size:1rem; margin-bottom:0.5rem; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:2px;">
                 Live Jesus in our hearts. 💚 Forever.
             </p>
-            <p style="font-size:0.85rem; margin-bottom:1.5rem;">
+            <p style="font-size:0.9rem; margin-bottom:1.5rem; font-family:'Oswald',sans-serif; letter-spacing:1px;">
                 Lasallian Environmental Advocacy • Committed to a Sustainable Future
             </p>
-            <div style="width:80px; height:1px; background:rgba(255,255,255,0.15); margin:0 auto 1.5rem;"></div>
-            <p style="font-size:0.75rem; opacity:0.5;">
+            <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-bottom:1.5rem;">
+                <div style="width:40px; height:1px; background:rgba(255,215,0,0.3);"></div>
+                <span style="color:var(--gold); font-size:0.8rem;">★ ★ ★</span>
+                <div style="width:40px; height:1px; background:rgba(255,215,0,0.3);"></div>
+            </div>
+            <p style="font-size:0.75rem; opacity:0.5; font-family:'Oswald',sans-serif; letter-spacing:1px;">
                 © 2025 Clark Kent P. Dalman - 11 ABM All rights reserved. Made with 💛 for Mother Earth.
             </p>
         </div>
@@ -708,6 +917,24 @@
 
     <!-- ══════════════════════════════════ JAVASCRIPT ══════════════════════════════════ -->
     <script>
+        // ── Generate Sunburst Rays ──
+        function createSunburst() {
+            const container = document.getElementById('sunburstContainer');
+            const numRays = 24;
+            for (let i = 0; i < numRays; i++) {
+                const ray = document.createElement('div');
+                ray.className = 'ray';
+                ray.style.transform = `rotate(${(360 / numRays) * i}deg)`;
+                if (i % 2 === 0) {
+                    ray.style.borderBottomColor = 'rgba(255, 215, 0, 0.08)';
+                } else {
+                    ray.style.borderBottomColor = 'rgba(0, 140, 69, 0.06)';
+                }
+                container.appendChild(ray);
+            }
+        }
+        createSunburst();
+
         // ── Responsive nav display ──
         function handleResize() {
             const desktopNav = document.querySelector('.desktop-nav');
@@ -803,23 +1030,6 @@
         }, { threshold: 0.5 });
 
         statNumbers.forEach(el => statObserver.observe(el));
-
-        // ── Hero Particles ──
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                const size = Math.random() * 8 + 3;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
-                particle.style.animationDelay = (Math.random() * 10) + 's';
-                container.appendChild(particle);
-            }
-        }
-        createParticles();
     </script>
 </body>
 </html>
